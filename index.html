@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Test Supabase</title>
+    <style>
+  body {
+    margin: 0;
+    padding: 2rem 1rem;
+    background: #f4f7fb;
+    color: #1f2937;
+    font: 16px/1.6 system-ui, sans-serif;
+  }
+
+  #load-articles {
+    padding: 0.7rem 1rem;
+    border: 0;
+    border-radius: 0.6rem;
+    background: #3ecf8e;
+    color: #10251b;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .articles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    max-width: 1000px;
+    margin: 1.5rem auto;
+  }
+
+  .article-card {
+    padding: 1.25rem;
+    border: 1px solid #e5eaf0;
+    border-radius: 1rem;
+    background: white;
+    box-shadow: 0 4px 16px #1822300a;
+  }
+
+  .article-card h2 {
+    margin: 0 0 0.4rem;
+    line-height: 1.25;
+  }
+
+  .article-card time {
+    color: #64748b;
+    font-size: 0.9rem;
+  }
+</style>
+  </head>
+  <body>
+    <h1>Test conexiune Supabase</h1>
+    <button id="load-articles">Încarcă articole</button>
+    <section id="articles" class="articles" aria-live="polite"></section>
+    <pre id="result">Apasă butonul pentru test.</pre>
+
+    <script type="module">
+      import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+      const SUPABASE_URL = 'https://zvfqqeqjcwbtjkamkfxx.supabase.co'
+      const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_t7ZQBoQoOEEeFU1xWd9Jag_yc2e6Fm-'
+
+      const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
+      const result = document.querySelector('#result')
+
+      document.querySelector('#load-articles').addEventListener('click', async () => {
+        result.textContent = 'Se încarcă...'
+
+        const { data, error } = await supabase
+          .from('posts') // Înlocuiește cu numele tabelei tale
+          .select('*')
+          .limit(10)
+
+        if (error) {
+          result.textContent = `Eroare: ${error.message}`
+          return
+        }
+
+        //result.textContent = JSON.stringify(data, null, 2)
+      })
+const articlesContainer = document.getElementById("articles");
+
+document.getElementById("load-articles").addEventListener("click", async () => {
+  articlesContainer.textContent = "Se încarcă articolele…";
+
+  const { data, error } = await supabase
+    .from("posts")
+    .select("title, body, published_at")
+    .eq("published", true)
+    .order("published_at", { ascending: false });
+
+  if (error) {
+    articlesContainer.textContent = `Nu am putut încărca articolele: ${error.message}`;
+    return;
+  }
+
+  articlesContainer.replaceChildren();
+
+  if (!data?.length) {
+    articlesContainer.textContent = "Nu există articole publicate momentan.";
+    return;
+  }
+
+  for (const post of data) {
+    const card = document.createElement("article");
+    card.className = "article-card";
+
+    const title = document.createElement("h2");
+    title.textContent = post.title;
+
+    const date = document.createElement("time");
+    if (post.published_at) {
+      date.dateTime = post.published_at;
+      date.textContent = new Intl.DateTimeFormat("ro-RO", {
+        dateStyle: "long",
+      }).format(new Date(post.published_at));
+    }
+
+    const body = document.createElement("p");
+    body.textContent = post.body;
+
+    card.append(title, date, body);
+    articlesContainer.append(card);
+  }
+});
+
+
+    </script>
+  </body>
+</html>
