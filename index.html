@@ -6,127 +6,407 @@
     <title>Test Supabase</title>
     <style>
   body {
-    margin: 0;
-    padding: 2rem 1rem;
-    background: #f4f7fb;
-    color: #1f2937;
-    font: 16px/1.6 system-ui, sans-serif;
-  }
+  margin: 0;
+  padding: 2rem 1rem;
+  background: #f4f7fb;
+  color: #1f2937;
+  font: 16px/1.6 system-ui, sans-serif;
+}
 
-  #load-articles {
-    padding: 0.7rem 1rem;
-    border: 0;
-    border-radius: 0.6rem;
-    background: #3ecf8e;
-    color: #10251b;
-    font-weight: 700;
-    cursor: pointer;
-  }
+#load-articles {
+  padding: 0.7rem 1rem;
+  border: 0;
+  border-radius: 0.6rem;
+  background: #3ecf8e;
+  color: #10251b;
+  font-weight: 700;
+  cursor: pointer;
+}
 
-  .articles {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1rem;
-    max-width: 1000px;
-    margin: 1.5rem auto;
-  }
+.articles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  max-width: 1000px;
+  margin: 1.5rem auto;
+}
 
-  .article-card {
-    padding: 1.25rem;
-    border: 1px solid #e5eaf0;
-    border-radius: 1rem;
-    background: white;
-    box-shadow: 0 4px 16px #1822300a;
-  }
+.article-card {
+  padding: 1.25rem;
+  border: 1px solid #e5eaf0;
+  border-radius: 1rem;
+  background: white;
+  box-shadow: 0 4px 16px #1822300a;
+}
 
-  .article-card h2 {
-    margin: 0 0 0.4rem;
-    line-height: 1.25;
-  }
+.article-card h2 {
+  margin: 0 0 0.4rem;
+  line-height: 1.25;
+}
 
-  .article-card time {
-    color: #64748b;
-    font-size: 0.9rem;
-  }
+.article-card time {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.auth-card {
+  max-width: 420px;
+  margin: 1.5rem auto;
+  padding: 1.25rem;
+  border: 1px solid #e5eaf0;
+  border-radius: 1rem;
+  background: white;
+  box-shadow: 0 4px 16px #1822300a;
+}
+
+.auth-card form {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.auth-card input {
+  padding: 0.7rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+}
+
+.auth-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+  text-align: center;
+}
+
+.auth-card button {
+  padding: 0.7rem 1rem;
+  border: 0;
+  border-radius: 0.6rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.auth-card form button[type="submit"] {
+  background: #3ecf8e;
+  color: #10251b;
+  width: 100%;
+  margin-top: 0.4rem;
+}
+
+.auth-card form button[type="submit"]:hover {
+  background: #35b87e;
+}
+
+#toggle-auth-text a {
+  color: #3ecf8e;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+#toggle-auth-text a:hover {
+  text-decoration: underline;
+}
+
+#logout-button {
+  background: #ef4444;
+  color: white;
+  width: 100%;
+}
+
+#logout-button:hover {
+  background: #dc2626;
+}
+
+#oauth-area {
+  margin-bottom: 1rem;
+}
+
+#google-login-button {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.6rem;
+  background: white;
+  color: #334155;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+#google-login-button:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.85rem;
+  margin: 1rem 0;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.separator:not(:empty)::before { margin-right: .5em; }
+.separator:not(:empty)::after { margin-left: .5em; }
+
+
+
 </style>
   </head>
   <body>
     <h1>Test conexiune Supabase</h1>
+   <section class="auth-card">
+  <h2 id="auth-title">Autentificare</h2>
+
+  <div id="oauth-area">
+    <button id="google-login-button" type="button">
+      <svg
+        aria-hidden="true"
+        width="20"
+        height="20"
+        viewBox="0 0 48 48"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.74 7.18l7.26 5.64c4.24-3.92 6.69-9.7 6.69-17.29z"/>
+        <path fill="#FBBC05" d="M10.53 28.59a14.4 14.4 0 0 1 0-9.18l-7.98-6.19a23.9 23.9 0 0 0 0 21.56l7.98-6.19z"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.9-5.8l-7.26-5.64c-2.02 1.36-4.61 2.16-8.64 2.16-6.26 0-11.57-4.22-13.46-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+      </svg>
+      Continuă cu Google
+    </button>
+    <div class="separator">sau</div>
+  </div>
+
+  <form id="auth-form">
+    <label for="email">Email</label>
+    <input id="email" type="email" required autocomplete="email" placeholder="nume@exemplu.com" />
+
+    <label for="password">Parolă</label>
+    <input id="password" type="password" required minlength="6" autocomplete="current-password" placeholder="••••••••" />
+
+    <!-- Un singur buton principal care își schimbă textul dinamic -->
+    <button type="submit" id="main-auth-button">Intră în cont</button>
+  </form>
+
+  <div class="auth-actions">
+    <!-- Un text simplu pentru a schimba între Login și Sign Up -->
+    <p id="toggle-auth-text">Nu ai un cont? <a href="#" id="toggle-auth-link">Înregistrează-te</a></p>
+    <button id="logout-button" type="button" hidden>Deconectare</button>
+  </div>
+
+  <p id="auth-status" role="status" aria-live="polite"></p>
+  <p id="current-user"></p>
+</section>
+
     <button id="load-articles">Încarcă articole</button>
     <section id="articles" class="articles" aria-live="polite"></section>
     <pre id="result">Apasă butonul pentru test.</pre>
 
     <script type="module">
-      import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-      const SUPABASE_URL = 'https://zvfqqeqjcwbtjkamkfxx.supabase.co'
-      const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_t7ZQBoQoOEEeFU1xWd9Jag_yc2e6Fm-'
+  const SUPABASE_URL = 'https://zvfqqeqjcwbtjkamkfxx.supabase.co'
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_t7ZQBoQoOEEeFU1xWd9Jag_yc2e6Fm-'
 
-      const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
-      const result = document.querySelector('#result')
+  const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
 
-      document.querySelector('#load-articles').addEventListener('click', async () => {
-        result.textContent = 'Se încarcă...'
+  // Selectoare elemente existente
+  const authForm = document.querySelector('#auth-form') || document.querySelector('#login-form')
+  const emailInput = document.querySelector('#email')
+  const passwordInput = document.querySelector('#password')
+  const logoutButton = document.querySelector('#logout-button')
+  const authStatus = document.querySelector('#auth-status')
+  const currentUser = document.querySelector('#current-user')
+  const oauthArea = document.querySelector('#oauth-area')
+  const googleLoginButton = document.querySelector('#google-login-button')
 
-        const { data, error } = await supabase
-          .from('posts') // Înlocuiește cu numele tabelei tale
-          .select('*')
-          .limit(10)
+  // Selectoare noi pentru gestionarea dinamică a stării (Login / Signup)
+  const authTitle = document.querySelector('#auth-title')
+  const mainAuthButton = authForm ? authForm.querySelector('button[type="submit"]') : null
+  const toggleAuthLink = document.querySelector('#toggle-auth-link')
+  const toggleAuthText = document.querySelector('#toggle-auth-text')
+
+  // Starea inițială a formularului este setată pe autentificare
+  let authMode = 'login'
+
+  // Funcție pentru comutarea vizuală între Login și Signup
+  function initAuthToggle() {
+    const link = document.querySelector('#toggle-auth-link')
+    if (!link) return
+
+    link.addEventListener('click', (e) => {
+      e.preventDefault()
+      if (authMode === 'login') {
+        authMode = 'signup'
+        if (authTitle) authTitle.textContent = 'Creare cont nou'
+        if (mainAuthButton) mainAuthButton.textContent = 'Înregistrare'
+        if (toggleAuthText) toggleAuthText.innerHTML = 'Ai deja cont? <a href="#" id="toggle-auth-link">Autentifică-te</a>'
+      } else {
+        authMode = 'login'
+        if (authTitle) authTitle.textContent = 'Autentificare'
+        if (mainAuthButton) mainAuthButton.textContent = 'Intră în cont'
+        if (toggleAuthText) toggleAuthText.innerHTML = 'Nu ai un cont? <a href="#" id="toggle-auth-link">Înregistrează-te</a>'
+      }
+      // Re-atașăm evenimentul pe linkul nou generat în DOM
+      initAuthToggle()
+    })
+  }
+
+  // Pornim ascultătorul pentru comutarea stării
+  initAuthToggle()
+
+  // Actualizarea vizuală a paginii în funcție de prezența sesiunii
+  function updateAuthView(session) {
+    const isLoggedIn = Boolean(session)
+
+    if (authForm) authForm.hidden = isLoggedIn
+    if (oauthArea) oauthArea.hidden = isLoggedIn 
+    if (toggleAuthText) toggleAuthText.hidden = isLoggedIn
+    if (logoutButton) logoutButton.hidden = !isLoggedIn
+
+    currentUser.textContent = isLoggedIn
+      ? `Conectat ca ${session.user.email ?? 'utilizator'}`
+      : 'Nu ești autentificat.'
+  }
+
+  // Restaurăm sesiunea existentă la încărcarea paginii.
+  const { data: { session } } = await supabase.auth.getSession()
+  updateAuthView(session)
+
+  // Actualizăm interfața automat la schimbarea stării sesiunii (login/logout).
+  supabase.auth.onAuthStateChange((_event, newSession) => {
+    updateAuthView(newSession)
+  })
+
+  // Gestionarea trimiterii formularului (Submit) atât pentru Login, cât și pentru Signup
+  if (authForm) {
+    authForm.addEventListener('submit', async (event) => {
+      event.preventDefault()
+      
+      const email = emailInput.value.trim()
+      const password = passwordInput.value
+
+      if (authMode === 'login') {
+        authStatus.textContent = 'Se autentifică…'
+        const { error } = await supabase.auth.signInWithPassword({ email, password })
+        
+        authStatus.textContent = error
+          ? `Autentificarea nu a reușit: ${error.message}`
+          : 'Autentificare reușită.'
+      } else {
+        authStatus.textContent = 'Se creează contul…'
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: window.location.origin,
+          },
+        })
 
         if (error) {
-          result.textContent = `Eroare: ${error.message}`
-          return
+          authStatus.textContent = `Crearea contului nu a reușit: ${error.message}`
+        } else if (data.session) {
+          authStatus.textContent = 'Cont creat și autentificat cu succes.'
+        } else {
+          authStatus.textContent = 'Cont creat. Verifică emailul și confirmă adresa înainte de autentificare.'
         }
+      }
+    })
+  }
 
-        //result.textContent = JSON.stringify(data, null, 2)
+  // Autentificare prin intermediul Google OAuth
+  if (googleLoginButton) {
+    googleLoginButton.addEventListener('click', async () => {
+      authStatus.textContent = 'Se redirecționează către Google…'
+
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin,
+        }
       })
-const articlesContainer = document.getElementById("articles");
 
-document.getElementById("load-articles").addEventListener("click", async () => {
-  articlesContainer.textContent = "Se încarcă articolele…";
-
-  const { data, error } = await supabase
-    .from("posts")
-    .select("title, body, published_at")
-    .eq("published", true)
-    .order("published_at", { ascending: false });
-
-  if (error) {
-    articlesContainer.textContent = `Nu am putut încărca articolele: ${error.message}`;
-    return;
+      if (error) {
+        authStatus.textContent = `Eroare la conectarea prin Google: ${error.message}`
+      }
+    })
   }
 
-  articlesContainer.replaceChildren();
-
-  if (!data?.length) {
-    articlesContainer.textContent = "Nu există articole publicate momentan.";
-    return;
+  // Deconectarea utilizatorului din aplicație
+  if (logoutButton) {
+    logoutButton.addEventListener('click', async () => {
+      authStatus.textContent = 'Se deconectează…'
+      const { error } = await supabase.auth.signOut()
+      authStatus.textContent = error ? `Deconectarea nu a reușit: ${error.message}` : 'Te-ai deconectat.'
+    })
   }
 
-  for (const post of data) {
-    const card = document.createElement("article");
-    card.className = "article-card";
+  // Logica pentru încărcarea și randarea articolelor din baza de date
+  const articlesContainer = document.querySelector('#articles')
+  const result = document.querySelector('#result')
 
-    const title = document.createElement("h2");
-    title.textContent = post.title;
+  document.querySelector('#load-articles').addEventListener('click', async () => {
+    result.textContent = 'Se încarcă articolele…'
+    articlesContainer.textContent = 'Se încarcă…'
 
-    const date = document.createElement("time");
-    if (post.published_at) {
-      date.dateTime = post.published_at;
-      date.textContent = new Intl.DateTimeFormat("ro-RO", {
-        dateStyle: "long",
-      }).format(new Date(post.published_at));
+    const { data, error } = await supabase
+      .from('posts')
+      .select('title, body, published_at')
+      .eq('published', true)
+      .order('published_at', { ascending: false })
+
+    if (error) {
+      result.textContent = `Eroare: ${error.message}`
+      articlesContainer.textContent = 'Nu am putut încărca articolele.'
+      return
     }
 
-    const body = document.createElement("p");
-    body.textContent = post.body;
+    result.textContent = 'Articole încărcate.'
+    articlesContainer.replaceChildren()
 
-    card.append(title, date, body);
-    articlesContainer.append(card);
-  }
-});
+    if (!data?.length) {
+      articlesContainer.textContent = 'Nu există articole publicate momentan.'
+      return
+    }
 
+    for (const post of data) {
+      const card = document.createElement('article')
+      card.className = 'article-card'
 
-    </script>
+      const title = document.createElement('h2')
+      title.textContent = post.title ?? ''
+
+      const date = document.createElement('time')
+      if (post.published_at) {
+        date.dateTime = post.published_at
+        date.textContent = new Intl.DateTimeFormat('ro-RO', {
+          dateStyle: 'long',
+        }).format(new Date(post.published_at))
+      }
+
+      const body = document.createElement('p')
+      body.textContent = post.body ?? ''
+
+      card.append(title, date, body)
+      articlesContainer.append(card)
+    }
+  })
+</script>
+
   </body>
 </html>
